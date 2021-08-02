@@ -12,6 +12,18 @@ param (
 
 foreach ($endpoint in $servers) {
     foreach ($port in $portlist) {
-        Test-NetConnection -ComputerName $endpoint -Port $port
+        Test-NetConnection -ComputerName $endpoint -Port $port | 
+            Select-Object @{
+                    Label="Timestamp"
+                    Expression={get-date -format yyyy-MM-ddTHH:mm:ss}
+                },
+                ComputerName,
+                @{
+                    Label="RemoteAddress"
+                    Expression={($_.RemoteAddress.IPAddressToString)}
+                },
+                RemotePort,
+                InterfaceAlias,
+                TcpTestSucceeded
     }
 }
